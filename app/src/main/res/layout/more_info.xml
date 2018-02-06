@@ -89,8 +89,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="10dp"
-                        android:weightSum="4"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:weightSum="4">
 
                         <ImageView
                             android:layout_width="34dp"
@@ -146,119 +146,120 @@
 
                         <Button
 
-                            android:id="@+id/link"
+                            android:id="@+id/vurud"
                             style="?android:attr/borderlessButtonStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="تاریخ ورود"
-
-                            android:textColor="@color/colorAccent"
-                            android:layout_alignParentTop="true"
                             android:layout_alignParentLeft="true"
                             android:layout_alignParentStart="true"
-                            android:layout_marginStart="50dp"
+                            android:layout_alignParentTop="true"
                             android:layout_marginLeft="50dp"
-                            />
+                            android:layout_marginStart="50dp"
+                            android:onClick="onClickVurud"
+                            android:text="تاریخ ورود"
+                            android:textColor="@color/colorAccent" />
+
                         <TextView
+                            android:id="@+id/vurud_day"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:id="@+id/vurud_day"
-                            android:text="سه شنبه"
-                            android:visibility="invisible"
-                            android:textColor="@color/colorAccent"
+                            android:layout_alignEnd="@+id/vurud_date"
                             android:layout_alignParentTop="true"
                             android:layout_alignRight="@+id/vurud_date"
-                            android:layout_alignEnd="@+id/vurud_date" />
+                            android:text="سه شنبه"
+                            android:textColor="@color/colorAccent"
+                            android:visibility="invisible" />
+
                         <TextView
+                            android:id="@+id/vurud_date"
                             android:layout_width="70dp"
                             android:layout_height="wrap_content"
-                            android:id="@+id/vurud_date"
-                            android:visibility="invisible"
-                            android:text="26 فرودین"
-                            android:textColor="@color/colorAccent"
-                            android:layout_below="@+id/vurud_day"
-
                             android:layout_alignParentLeft="true"
                             android:layout_alignParentStart="true"
+                            android:layout_below="@+id/vurud_day"
+                            android:layout_marginLeft="50dp"
+
                             android:layout_marginStart="50dp"
-                            android:layout_marginLeft="50dp"/>
+                            android:text="26 فرودین"
+                            android:textColor="@color/colorAccent"
+                            android:visibility="invisible" />
+
                         <TextView
+                            android:id="@+id/khuruj_day"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:id="@+id/khuruj_day"
-                            android:text="سه شنبه"
-                            android:visibility="invisible"
-                            android:textColor="@color/colorAccent"
-                            android:layout_alignParentTop="true"
-                            android:layout_alignParentRight="true"
                             android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentTop="true"
+                            android:layout_marginEnd="50dp"
                             android:layout_marginRight="50dp"
-                            android:layout_marginEnd="50dp"/>
+                            android:text="سه شنبه"
+                            android:textColor="@color/colorAccent"
+                            android:visibility="invisible" />
+
                         <TextView
+                            android:id="@+id/khuruj_date"
                             android:layout_width="70dp"
                             android:layout_height="wrap_content"
-                            android:id="@+id/khuruj_date"
-                            android:text="26 فرودین"
-                            android:visibility="invisible"
-                            android:textColor="@color/colorAccent"
+                            android:layout_alignEnd="@+id/khuruj"
+                            android:layout_alignRight="@+id/khuruj"
                             android:layout_below="@+id/khuruj_day"
-                            android:layout_alignRight="@+id/link2"
-                            android:layout_alignEnd="@+id/link2" />
-
+                            android:onClick="onClick"
+                            android:text="26 فرودین"
+                            android:textColor="@color/colorAccent"
+                            android:visibility="invisible" />
 
 
                         <Button
-                            android:id="@+id/link2"
+                            android:id="@+id/khuruj"
                             style="?android:attr/borderlessButtonStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-
-                            android:layout_weight="1"
-
-                            android:text="تاریخ خروج"
-                            android:textColor="@color/colorAccent"
-                            android:layout_alignParentTop="true"
-                            android:layout_alignParentRight="true"
                             android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+
+                            android:layout_alignParentTop="true"
+                            android:layout_marginEnd="50dp"
                             android:layout_marginRight="50dp"
-                            android:layout_marginEnd="50dp" />
+                            android:layout_weight="1"
+                            android:onClick="onClickKhuruj"
+                            android:text="تاریخ خروج"
+                            android:textColor="@color/colorAccent" />
                     </RelativeLayout>
 
 
-
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="0.5dp"
-                        android:background="@android:color/darker_gray"/>
+                        android:background="@android:color/darker_gray" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="تعداد افراد"
                         android:layout_margin="15dp"
-                        android:gravity="right"/>
+                        android:gravity="right"
+                        android:text="تعداد افراد" />
 
                     <SeekBar
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
+                        android:id="@+id/seekBar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_marginBottom="20dp"
-                            android:id="@+id/seekBar"
-                            android:max="3"
-                             />
+                        android:layout_marginTop="10dp"
+                        android:max="3" />
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="0.5dp"
 
-                        android:background="@android:color/darker_gray"/>
+                        android:background="@android:color/darker_gray" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="منظره"
                         android:layout_margin="15dp"
-                        android:gravity="right"/>
+                        android:gravity="right"
+                        android:text="منظره" />
 
                 </LinearLayout>
 
