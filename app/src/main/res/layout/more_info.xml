@@ -44,7 +44,7 @@
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="#d1dcdcdc"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
@@ -53,9 +53,9 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
 
-            android:paddingBottom="8dp"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp">
+            android:paddingBottom="0dp"
+            android:paddingLeft="0dp"
+            android:paddingRight="0dp">
 
 
             <!-- A CardView that contains a TextView -->
@@ -204,7 +204,6 @@
                             android:layout_alignEnd="@+id/khuruj"
                             android:layout_alignRight="@+id/khuruj"
                             android:layout_below="@+id/khuruj_day"
-                            android:onClick="onClick"
                             android:text="26 فرودین"
                             android:textColor="@color/colorAccent"
                             android:visibility="invisible" />
