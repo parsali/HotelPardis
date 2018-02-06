@@ -17,18 +17,30 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.myBestoolbar);
+        setSupportActionBar(toolbar);
+        ab = getSupportActionBar();
+        ab.setDisplayShowTitleEnabled(false);
 
 
         DB= new databaseHandler(getApplicationContext());
-        listView = (ListView)findViewById(R.id.list);
+
         CustomListViewAdapter customListView = new CustomListViewAdapter(getApplicationContext());
-        listView.setAdapter(customListView);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getApplicationContext(),moreInfo.class);
-                startActivity(intent);
-            }
-        });
+
+    }
+    public void onClickLux(View v){
+        Intent intent = new Intent(getApplicationContext(),moreInfo.class);
+        intent.putExtra("type",1);
+        startActivity(intent);
+    }
+    public void onClickPrimium(View v){
+        Intent intent = new Intent(getApplicationContext(),moreInfo.class);
+        intent.putExtra("type",2);
+        startActivity(intent);
+    }
+    public void onClickEconomy(View v){
+        Intent intent = new Intent(getApplicationContext(),moreInfo.class);
+        intent.putExtra("type",3);
+        startActivity(intent);
     }
 }

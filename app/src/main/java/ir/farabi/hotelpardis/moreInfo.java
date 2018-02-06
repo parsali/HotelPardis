@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +29,9 @@ public class moreInfo extends AppCompatActivity {
     TextView date;
     TextView khuruj_day;
     TextView khuruj_date;
+    TextView info_text;
+    ImageView backdrop;
+    int type;
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -45,12 +50,29 @@ public class moreInfo extends AppCompatActivity {
         // Enable the Up button
         ab.setDisplayHomeAsUpEnabled(true);
         ab.setDisplayShowHomeEnabled(true);
+        Bundle bundle = getIntent().getExtras();
+
+        type= bundle.getInt("type");
         vurud = (Button) findViewById(R.id.vurud);
         khuruj = (Button) findViewById(R.id.khuruj);
         day=(TextView)findViewById(R.id.vurud_day);
         date=(TextView)findViewById(R.id.vurud_date);
         khuruj_day=(TextView)findViewById(R.id.khuruj_day);
         khuruj_date=(TextView)findViewById(R.id.khuruj_date);
+        backdrop = (ImageView)findViewById(R.id.backdrop);
+        info_text=(TextView)findViewById(R.id.info_text);
+        if(type==1){
+            backdrop.setImageResource(R.drawable.luxury);
+            info_text.setText("لوکس");
+        }
+        if(type==2){
+            backdrop.setImageResource(R.drawable.special);
+            info_text.setText("ویژه");
+        }
+        if(type==3){
+            backdrop.setImageResource(R.drawable.economy);
+            info_text.setText("اقتصادی");
+        }
 
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
