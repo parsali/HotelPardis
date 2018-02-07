@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -27,7 +28,8 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
-public class MainActivity extends AppCompatActivity implements HomeFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements HomeFragment.OnFragmentInteractionListener,EmptyRoom.OnFragmentInteractionListener,
+                                                                contactUs.OnFragmentInteractionListener,aboutUs.OnFragmentInteractionListener,reserve.OnFragmentInteractionListener {
     databaseHandler DB;
     ActionBar ab;
     public static int navItemIndex = 0;
@@ -41,10 +43,10 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
     private FloatingActionButton fab;
     private Handler mHandler;
     private static final String TAG_HOME = "home";
-    private static final String TAG_PHOTOS = "photos";
-    private static final String TAG_MOVIES = "movies";
-    private static final String TAG_NOTIFICATIONS = "notifications";
-    private static final String TAG_SETTINGS = "settings";
+    private static final String TAG_reserve = "reserve";
+    private static final String TAG_hesab = "hesab";
+    private static final String TAG_aboutUs = "aboutUs";
+    private static final String TAG_contactUs = "contactUs";
     public static String CURRENT_TAG = TAG_HOME;
     private String[] activityTitles;
     ActionBarDrawerToggle actionBarDrawerToggle;
@@ -83,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
 
         DB= new databaseHandler(getApplicationContext());
 
-        CustomListViewAdapter customListView = new CustomListViewAdapter(getApplicationContext());
+
 
     }
     private void loadNavHeader() {
@@ -156,9 +158,13 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
                 return EmptyRoom;
             case 2:
                 // movies fragment
+                reserve reserve = new reserve();
+                return reserve;
+            case 3:
+                Log.d("does it?","it does");
                 aboutUs aboutUs = new aboutUs();
                 return aboutUs;
-            case 3:
+            case 4:
                 // notifications fragment
                 contactUs contactUs = new contactUs();
                 return contactUs;
@@ -183,32 +189,43 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
             public boolean onNavigationItemSelected(MenuItem menuItem) {
 
                 //Check to see which item was being clicked and perform appropriate action
-                switch (menuItem.getItemId()) {
-                    //Replacing the main content with ContentFragment Which is our Inbox View;
-                    case R.id.nav_home:
-                        navItemIndex = 0;
-                        CURRENT_TAG = TAG_HOME;
-                        break;
-                    case R.id.virayesh:
-                        navItemIndex = 1;
-                        CURRENT_TAG = TAG_PHOTOS;
-                        break;
-                    case R.id.empty:
-                        navItemIndex = 2;
-                        CURRENT_TAG = TAG_MOVIES;
-                        break;
+                if(menuItem.getGroupId()==R.id.menu_top) {
+                    switch (menuItem.getItemId()) {
+                        //Replacing the main content with ContentFragment Which is our Inbox View;
 
-                    case R.id.aboutUs:
-                        // launch new intent instead of loading fragment
-                        navItemIndex = 3;
-                        CURRENT_TAG = TAG_MOVIES;
-                    case R.id.contactUS:
-                        // launch new intent instead of loading fragment
-                        navItemIndex =4;
-                        CURRENT_TAG = TAG_MOVIES;
-                    default:
-                        navItemIndex = 0;
+                        case R.id.nav_home:
+                            navItemIndex = 0;
+                            CURRENT_TAG = TAG_HOME;
+                            break;
+                        case R.id.virayesh:
+                            navItemIndex = 1;
+                            CURRENT_TAG = TAG_hesab;
+                            break;
+                        case R.id.reserve:
+                            navItemIndex = 2;
+                            CURRENT_TAG = TAG_reserve;
+                            break;
+                    }
                 }
+                    else{
+                        switch (menuItem.getItemId()) {
+                            case R.id.aboutUs:
+                                Log.d("does it?","it does");
+
+                                // launch new intent instead of loading fragment
+                                navItemIndex = 3;
+                                CURRENT_TAG = TAG_aboutUs;
+                                break;
+                            case R.id.contactUS:
+                                // launch new intent instead of loading fragment
+                                navItemIndex = 4;
+                                CURRENT_TAG = TAG_contactUs;
+                                break;
+                            default:
+                                navItemIndex = 0;
+                        }
+                    }
+
 
                 //Checking if the item is in checked state or not, if not make it in checked state
                 if (menuItem.isChecked()) {
@@ -260,7 +277,26 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
     private void setToolbarTitle() {
         getSupportActionBar().setTitle(activityTitles[navItemIndex]);
     }
+    @Override
+    public void onBackPressed() {
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawers();
+            return;
+        }
 
+        // This code loads home fragment when back key is pressed
+        // when user is in other fragment than home
+
+            // checking if user is on other navigation menu
+            // rather than home
+            if (navItemIndex != 0) {
+                navItemIndex = 0;
+                CURRENT_TAG = TAG_HOME;
+                loadHomeFragment();
+                return;
+            }
+       
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

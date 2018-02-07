@@ -7,15 +7,15 @@
     <item
         android:id="@+id/nav_home"
 
-        android:title="مدیریت رزرو" />
+        android:title="اتاق ها" />
     <item
         android:id="@+id/virayesh"
 
         android:title="ویرایش حساب" />
     <item
-        android:id="@+id/empty"
+        android:id="@+id/reserve"
 
-        android:title="اتاق های خالی" />
+        android:title="مدیریت رزرو"/>
 
     <!--<item-->
         <!--android:id="@+id/nav_notifications"-->
@@ -30,6 +30,7 @@
 </group>
 <group
     android:id="@+id/menu_bottom"
+    android:checkableBehavior="single"
    >
 
     <item
