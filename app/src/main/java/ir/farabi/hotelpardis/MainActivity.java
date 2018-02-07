@@ -13,6 +13,7 @@ import android.support.design.widget.NavigationView;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -51,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mHandler = new Handler();
@@ -234,6 +236,18 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
                 // Code here will be triggered once the drawer open as we dont want anything to happen so we leave this blank
                 super.onDrawerOpened(drawerView);
             }
+             @Override
+             public boolean onOptionsItemSelected(MenuItem item) {
+                 if (item != null && item.getItemId() == android.R.id.home) {
+                     if (drawer.isDrawerOpen(Gravity.RIGHT)) {
+                         drawer.closeDrawer(Gravity.RIGHT);
+                     }
+                     else {
+                         drawer.openDrawer(Gravity.RIGHT);
+                     }
+                 }
+                 return false;
+             }
         };
 
         //Setting the actionbarToggle to drawer layout
@@ -270,9 +284,6 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
         if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
-
-
-
         return super.onOptionsItemSelected(item);
     }
 
