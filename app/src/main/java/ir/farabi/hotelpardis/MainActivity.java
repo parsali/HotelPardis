@@ -1,5 +1,7 @@
 package ir.farabi.hotelpardis;
 
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -22,8 +24,7 @@ public class MainActivity extends AppCompatActivity {
         ab = getSupportActionBar();
         ab.setDisplayShowTitleEnabled(false);
 
-
-        DB= new databaseHandler(getApplicationContext());
+        DB= new databaseHandler(this);
 
         CustomListViewAdapter customListView = new CustomListViewAdapter(getApplicationContext());
 

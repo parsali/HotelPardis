@@ -6,7 +6,7 @@ package ir.farabi.hotelpardis;
 public class constants {
 
 
-    public static String DATABASE_NAME = "";
+    public static String DATABASE_NAME = "HotelDB";
 
     public static final int DATABASE_VERSION = 2;
     public static final String TABLE_NAME_room = "room";
@@ -24,6 +24,8 @@ public class constants {
     public static final String VIEW = "room_view";
     public static final String CUSTOMER_ID="customer_id";
     public static final String CUSTOMER_NAME="customer_name";
+    public static final String CUSTOMER_USERNAME="customer_username";
+    public static final String CUSTOMER_PASSWORD="customer_password";
     public static final String CUSTOMER_CODE="customer_code";
     public static final String DATE_START="start_date";
     public static final String DATE_END="end_date";
