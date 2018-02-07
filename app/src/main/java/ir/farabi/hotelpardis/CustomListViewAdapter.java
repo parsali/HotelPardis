@@ -63,15 +63,15 @@ public class CustomListViewAdapter extends BaseAdapter {
 
            if(position==0){
                type.setText("اقتصادی");
-               image.setImageResource(R.drawable.p05nt3bn);
+               image.setImageResource(R.drawable.economy);
            }
             else if (position==1){
                type.setText("لوکس");
-               image.setImageResource(R.drawable.p05nt3bn);
+               image.setImageResource(R.drawable.luxury);
            }
             else if(position==2){
                type.setText("ویژه");
-               image.setImageResource(R.drawable.p05nt3bn);
+               image.setImageResource(R.drawable.special);
            }
 
 

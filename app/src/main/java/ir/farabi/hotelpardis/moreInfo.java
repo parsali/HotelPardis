@@ -19,6 +19,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.mohamadamin.persianmaterialdatetimepicker.date.DatePickerDialog;
 import com.mohamadamin.persianmaterialdatetimepicker.utils.PersianCalendar;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class moreInfo extends AppCompatActivity {
@@ -86,9 +87,10 @@ public class moreInfo extends AppCompatActivity {
                                                                              @Override
                                                                              public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
                                                                                  Toast.makeText(getApplicationContext(), "" + year + "/" + monthOfYear + "/" + dayOfMonth, Toast.LENGTH_SHORT).show();
-                                                                                 day.setText(String.valueOf(dayOfMonth));
-                                                                                 date.setText(monthOfYear+","+year);
-
+                                                                                 PersianCalendar selected = new PersianCalendar();
+                                                                                 selected.setPersianDate(year,monthOfYear,dayOfMonth);
+                                                                                 day.setText(selected.getPersianWeekDayName());
+                                                                                 date.setText(dayOfMonth+","+monthOfYear+","+year);
                                                                                  day.setVisibility(View.VISIBLE);
                                                                                  date.setVisibility(View.VISIBLE);
                                                                                  vurud.setVisibility(View.INVISIBLE);
@@ -107,8 +109,10 @@ public class moreInfo extends AppCompatActivity {
                                                                              @Override
                                                                              public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
                                                                                  Toast.makeText(getApplicationContext(), "" + year + "/" + monthOfYear + "/" + dayOfMonth, Toast.LENGTH_SHORT).show();
-                                                                                 khuruj_day.setText(String.valueOf(dayOfMonth));
-                                                                                 khuruj_date.setText(monthOfYear + "," + year);
+                                                                                 PersianCalendar selected = new PersianCalendar();
+                                                                                 selected.setPersianDate(year,monthOfYear,dayOfMonth);
+                                                                                 khuruj_day.setText(selected.getPersianWeekDayName());
+                                                                                 khuruj_date.setText(dayOfMonth+","+monthOfYear + "," + year);
                                                                                  khuruj_day.setVisibility(View.VISIBLE);
                                                                                  khuruj_date.setVisibility(View.VISIBLE);
                                                                                  khuruj.setVisibility(View.INVISIBLE);

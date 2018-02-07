@@ -20,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:id="@+id/image"
-    android:src="@drawable/p05nt3bn"
+        android:src="@drawable/economy"
         android:scaleType="centerCrop"
        />
 
