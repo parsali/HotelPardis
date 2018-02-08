@@ -32,6 +32,8 @@ public class moreInfo extends AppCompatActivity {
     TextView khuruj_date;
     TextView info_text;
     ImageView backdrop;
+    TextView TextVurud;
+    TextView TextKHuruj;
     int type;
 
     /**
@@ -61,6 +63,8 @@ public class moreInfo extends AppCompatActivity {
         khuruj_day=(TextView)findViewById(R.id.khuruj_day);
         khuruj_date=(TextView)findViewById(R.id.khuruj_date);
         backdrop = (ImageView)findViewById(R.id.backdrop);
+        TextVurud = (TextView)findViewById(R.id.TextVurud);
+        TextKHuruj = (TextView)findViewById(R.id.TextKhuruj);
         info_text=(TextView)findViewById(R.id.info_text);
         if(type==1){
             backdrop.setImageResource(R.drawable.luxury);
@@ -90,10 +94,11 @@ public class moreInfo extends AppCompatActivity {
                                                                                  PersianCalendar selected = new PersianCalendar();
                                                                                  selected.setPersianDate(year,monthOfYear,dayOfMonth);
                                                                                  day.setText(selected.getPersianWeekDayName());
-                                                                                 date.setText(dayOfMonth+","+monthOfYear+","+year);
+                                                                                 date.setText(dayOfMonth+" "+getMounth(monthOfYear));
                                                                                  day.setVisibility(View.VISIBLE);
                                                                                  date.setVisibility(View.VISIBLE);
                                                                                  vurud.setVisibility(View.INVISIBLE);
+                                                                                 TextVurud.setVisibility(View.VISIBLE);
                                                                              }
                                                                          }, now.getPersianYear(),
                 now.getPersianMonth(),
@@ -112,10 +117,11 @@ public class moreInfo extends AppCompatActivity {
                                                                                  PersianCalendar selected = new PersianCalendar();
                                                                                  selected.setPersianDate(year,monthOfYear,dayOfMonth);
                                                                                  khuruj_day.setText(selected.getPersianWeekDayName());
-                                                                                 khuruj_date.setText(dayOfMonth+","+monthOfYear + "," + year);
+                                                                                 khuruj_date.setText(dayOfMonth+" "+getMounth(monthOfYear));
                                                                                  khuruj_day.setVisibility(View.VISIBLE);
                                                                                  khuruj_date.setVisibility(View.VISIBLE);
                                                                                  khuruj.setVisibility(View.INVISIBLE);
+                                                                                 TextKHuruj.setVisibility(View.VISIBLE);
 
                                                                              }
                                                                          }, now.getPersianYear(),
@@ -125,6 +131,36 @@ public class moreInfo extends AppCompatActivity {
 
 
         datePickerDialog.show(getFragmentManager(), "tpd");
+    }
+    public String getMounth(int mounth) {
+        switch (mounth) {
+            case 1:
+                return "فرودین";
+            case 2:
+                return"اردیبهشت";
+            case 3:
+                return"خرداد";
+            case 4:
+                return"تیر";
+            case 5:
+                return"مرداد";
+            case 6:
+                return "شهریور";
+            case 7:
+                return "مهر";
+            case 8:
+                return "آبان";
+            case 9:
+                return "آذر";
+            case 10:
+                return "دی";
+            case 11:
+                return "بهمن";
+            case 12:
+                return "اسفند";
+            default:
+                return "";
+        }
     }
 
     @Override

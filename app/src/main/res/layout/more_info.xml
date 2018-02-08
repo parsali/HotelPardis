@@ -63,14 +63,17 @@
 
             <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/card_view"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
 
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_height="wrap_content"
                 card_view:cardCornerRadius="4dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+
                     android:orientation="vertical">
 
                     <TextView
@@ -80,9 +83,15 @@
                         android:layout_marginRight="10dp"
                         android:layout_marginTop="10dp"
                         android:gravity="right"
+
                         android:text="پریمیوم"
-                        android:textSize="15sp"
+                        android:textSize="18sp"
                         android:textStyle="bold" />
+                    <TextView
+                        android:layout_margin="10dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/roomDesc"/>
 
 
                     <LinearLayout
@@ -129,6 +138,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
                 card_view:cardCornerRadius="4dp">
 
                 <LinearLayout
@@ -140,37 +151,45 @@
                         android:layout_width="match_parent"
                         android:layout_height="73dp"
                         android:orientation="horizontal"
-                        android:padding="10dp"
+
 
                         android:weightSum="2">
 
                         <Button
 
+                            android:layout_centerVertical="true"
                             android:id="@+id/vurud"
+
                             style="?android:attr/borderlessButtonStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentLeft="true"
                             android:layout_alignParentStart="true"
-                            android:layout_alignParentTop="true"
+
                             android:layout_marginLeft="50dp"
+                            android:drawableTop="@drawable/ic_event_note_black_18dp"
                             android:layout_marginStart="50dp"
+                            android:drawableTint="@color/colorAccent"
                             android:onClick="onClickVurud"
-                            android:text="تاریخ ورود"
+                            android:text="ورود"
                             android:textColor="@color/colorAccent" />
 
                         <TextView
                             android:id="@+id/vurud_day"
                             android:layout_width="wrap_content"
+                            android:visibility="invisible"
                             android:layout_height="wrap_content"
                             android:layout_alignEnd="@+id/vurud_date"
-                            android:layout_alignParentTop="true"
+                            android:layout_centerVertical="true"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
                             android:layout_alignRight="@+id/vurud_date"
                             android:text="سه شنبه"
                             android:textColor="@color/colorAccent"
-                            android:visibility="invisible" />
+                             />
 
                         <TextView
+                            android:textSize="13sp"
                             android:id="@+id/vurud_date"
                             android:layout_width="70dp"
                             android:layout_height="wrap_content"
@@ -178,11 +197,33 @@
                             android:layout_alignParentStart="true"
                             android:layout_below="@+id/vurud_day"
                             android:layout_marginLeft="50dp"
-
+                            android:visibility="invisible"
                             android:layout_marginStart="50dp"
                             android:text="26 فرودین"
                             android:textColor="@color/colorAccent"
-                            android:visibility="invisible" />
+                             />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_toLeftOf="@+id/divider"
+                            android:visibility="invisible"
+                            android:id="@+id/TextVurud"
+                            android:layout_margin="8dp"
+                            android:text="ورود"/>
+                        <View
+                            android:layout_width="0.5dp"
+                            android:id="@+id/divider"
+                            android:layout_height="match_parent"
+                            android:layout_centerHorizontal="true"
+                            android:background="@android:color/darker_gray" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_margin="8dp"
+                            android:id="@+id/TextKhuruj"
+                            android:visibility="invisible"
+                            android:text="خروج"/>
 
                         <TextView
                             android:id="@+id/khuruj_day"
@@ -190,7 +231,9 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
                             android:layout_alignParentRight="true"
-                            android:layout_alignParentTop="true"
+                            android:layout_centerVertical="true"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
                             android:layout_marginEnd="50dp"
                             android:layout_marginRight="50dp"
                             android:text="سه شنبه"
@@ -198,6 +241,7 @@
                             android:visibility="invisible" />
 
                         <TextView
+                            android:textSize="13sp"
                             android:id="@+id/khuruj_date"
                             android:layout_width="70dp"
                             android:layout_height="wrap_content"
@@ -216,13 +260,14 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
                             android:layout_alignParentRight="true"
-
-                            android:layout_alignParentTop="true"
+                            android:drawableTop="@drawable/ic_event_note_black_18dp"
+                            android:layout_centerVertical="true"
+                            android:drawableTint="@color/colorAccent"
                             android:layout_marginEnd="50dp"
                             android:layout_marginRight="50dp"
                             android:layout_weight="1"
                             android:onClick="onClickKhuruj"
-                            android:text="تاریخ خروج"
+                            android:text="خروج"
                             android:textColor="@color/colorAccent" />
                     </RelativeLayout>
 
@@ -240,12 +285,15 @@
                         android:text="تعداد افراد" />
 
                     <SeekBar
+                        android:progress="1"
                         android:id="@+id/seekBar"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="20dp"
                         android:layout_marginTop="10dp"
-                        android:max="3" />
+                        
+                        android:max="3"
+                        />
 
                     <View
                         android:layout_width="match_parent"

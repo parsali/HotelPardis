@@ -295,7 +295,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
                 loadHomeFragment();
                 return;
             }
-       
+
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
