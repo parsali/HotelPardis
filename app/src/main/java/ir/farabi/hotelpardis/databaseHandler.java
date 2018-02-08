@@ -2,6 +2,7 @@ package ir.farabi.hotelpardis;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -33,31 +34,33 @@ public class databaseHandler extends SQLiteOpenHelper {
                 + constants.ROOM_TYPE + " char(1) PRIMARY KEY, "
                 + constants.PERSON_NAME + " TEXT, "
                 + constants.PRICE + " int );";
-        String CREATE_ROOMSPEC_TABLE = "CREATE TABLE "+ constants.TABLE_NAME_roomSpecs+ "("
+        String CREATE_ROOMSPEC_TABLE = "CREATE TABLE " + constants.TABLE_NAME_roomSpecs + "("
                 + constants.NUMBER_ROOM + " varchar(3) PRIMARY KEY, "
                 + constants.NUMBER_BED + " char(1),"
                 + constants.ROOM_TYPE + " char(1),"
                 + constants.VIEW + " char(1),"
-                + " FOREIGN KEY ("+constants.ROOM_TYPE+") REFERENCES "+constants.TABLE_NAME_room+"("+constants.ROOM_TYPE+"));";
-        String CREATE_CUSTOMER_TABLE="CREATE TABLE "+ constants.TABLE_NAME_CUSTOMER +"("
+                + " FOREIGN KEY (" + constants.ROOM_TYPE + ") REFERENCES " + constants.TABLE_NAME_room + "(" + constants.ROOM_TYPE + "));";
+        String CREATE_CUSTOMER_TABLE = "CREATE TABLE " + constants.TABLE_NAME_CUSTOMER + "("
                 + constants.CUSTOMER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + constants.CUSTOMER_NAME + " nvarchar(50),"
                 + constants.CUSTOMER_USERNAME + " varchar(50),"
                 + constants.CUSTOMER_PASSWORD + " varchar(50),"
                 + constants.CUSTOMER_CODE + " varchar(10));";
-        String CREATE_RESERVE_TABLE="CREATE TABLE " + constants.TABLE_NAME_RESERVE+"("
+        String CREATE_RESERVE_TABLE = "CREATE TABLE " + constants.TABLE_NAME_RESERVE + "("
                 + constants.NUMBER_ROOM + " varchar(3),"
                 + constants.CUSTOMER_ID + " int,"
                 + constants.DATE_START + " DATE"
                 + constants.DATE_END + " DATE,"
-                + " FOREIGN KEY ("+constants.NUMBER_ROOM+") REFERENCES "+constants.TABLE_NAME_roomSpecs+"("+constants.NUMBER_ROOM+")"
-                + " FOREIGN KEY ("+constants.CUSTOMER_ID+") REFERENCES "+constants.TABLE_NAME_CUSTOMER+"("+constants.CUSTOMER_ID+"));";;
+                + " FOREIGN KEY (" + constants.NUMBER_ROOM + ") REFERENCES " + constants.TABLE_NAME_roomSpecs + "(" + constants.NUMBER_ROOM + ")"
+                + " FOREIGN KEY (" + constants.CUSTOMER_ID + ") REFERENCES " + constants.TABLE_NAME_CUSTOMER + "(" + constants.CUSTOMER_ID + "));";
+        ;
         db.execSQL(CREATE_ROOM_TABLE);
         db.execSQL(CREATE_ROOMSPEC_TABLE);
         db.execSQL(CREATE_CUSTOMER_TABLE);
         db.execSQL(CREATE_RESERVE_TABLE);
 
     }
+
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + constants.TABLE_NAME_CUSTOMER);
@@ -104,46 +107,46 @@ public class databaseHandler extends SQLiteOpenHelper {
         db.close();
     }
 
-    public ArrayList<Cursor> getData(String Query){
+    public ArrayList<Cursor> getData(String Query) {
         //get writable database
         SQLiteDatabase sqlDB = this.getWritableDatabase();
-        String[] columns = new String[] { "message" };
+        String[] columns = new String[]{"message"};
         //an array list of cursor to save two cursors one has results from the query
         //other cursor stores error message if any errors are triggered
         ArrayList<Cursor> alc = new ArrayList<Cursor>(2);
-        MatrixCursor Cursor2= new MatrixCursor(columns);
+        MatrixCursor Cursor2 = new MatrixCursor(columns);
         alc.add(null);
         alc.add(null);
 
-        try{
-            String maxQuery = Query ;
+        try {
+            String maxQuery = Query;
             //execute the query results will be save in Cursor c
             Cursor c = sqlDB.rawQuery(maxQuery, null);
 
             //add value to cursor2
-            Cursor2.addRow(new Object[] { "Success" });
+            Cursor2.addRow(new Object[]{"Success"});
 
-            alc.set(1,Cursor2);
+            alc.set(1, Cursor2);
             if (null != c && c.getCount() > 0) {
 
-                alc.set(0,c);
+                alc.set(0, c);
                 c.moveToFirst();
 
-                return alc ;
+                return alc;
             }
             return alc;
-        } catch(SQLException sqlEx){
+        } catch (SQLException sqlEx) {
             Log.d("printing exception", sqlEx.getMessage());
             //if any exceptions are triggered save the error message to cursor an return the arraylist
-            Cursor2.addRow(new Object[] { ""+sqlEx.getMessage() });
-            alc.set(1,Cursor2);
+            Cursor2.addRow(new Object[]{"" + sqlEx.getMessage()});
+            alc.set(1, Cursor2);
             return alc;
-        } catch(Exception ex){
+        } catch (Exception ex) {
             Log.d("printing exception", ex.getMessage());
 
             //if any exceptions are triggered save the error message to cursor an return the arraylist
-            Cursor2.addRow(new Object[] { ""+ex.getMessage() });
-            alc.set(1,Cursor2);
+            Cursor2.addRow(new Object[]{"" + ex.getMessage()});
+            alc.set(1, Cursor2);
             return alc;
         }
     }
@@ -221,7 +224,7 @@ public class databaseHandler extends SQLiteOpenHelper {
         return false;
     }
 
-    public User getUser(String username){
+    public User getUser(String username) {
         User user = new User();
         String[] columns = {
                 constants.CUSTOMER_ID,
@@ -254,12 +257,12 @@ public class databaseHandler extends SQLiteOpenHelper {
         return user;
     }
 
-    public List<Room> getAllRooms(String type){
+    public List<Room> getAllRooms(String type) {
         List<Room> roomList = new ArrayList<Room>();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + constants.TABLE_NAME_roomSpecs + " INNER JOIN " + constants.TABLE_NAME_room + " ON "+ constants.TABLE_NAME_room+"."+constants.ROOM_TYPE + "="+ constants.TABLE_NAME_roomSpecs+"."+constants.ROOM_TYPE + " WHERE "+ constants.TABLE_NAME_roomSpecs+"."+constants.ROOM_TYPE +"="+type.trim(),null);
+        Cursor cursor = db.rawQuery("SELECT * FROM " + constants.TABLE_NAME_roomSpecs + " INNER JOIN " + constants.TABLE_NAME_room + " ON " + constants.TABLE_NAME_room + "." + constants.ROOM_TYPE + "=" + constants.TABLE_NAME_roomSpecs + "." + constants.ROOM_TYPE + " WHERE " + constants.TABLE_NAME_roomSpecs + "." + constants.ROOM_TYPE + "=" + type.trim(), null);
 
-        if(cursor.moveToFirst()) {
+        if (cursor.moveToFirst()) {
             do {
                 Room room = new Room();
                 room.setRoomNumber(cursor.getString(cursor.getColumnIndex(constants.NUMBER_ROOM)));
@@ -276,11 +279,11 @@ public class databaseHandler extends SQLiteOpenHelper {
         return roomList;
     }
 
-    public List<String> getAvailableRooms(String type, String dateStart, String dateEnd){
+    public List<String> getAvailableRooms(String type, String dateStart, String dateEnd) {
         List availableRooms = new ArrayList<String>();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT rs."+constants.NUMBER_ROOM +" FROM " + constants.TABLE_NAME_roomSpecs + " AS rs WHERE rs."+constants.ROOM_TYPE+"="+type.trim()+" AND rs."+constants.NUMBER_ROOM+" NOT IN ( SELECT rs1."+constants.NUMBER_ROOM+" FROM "+constants.TABLE_NAME_roomSpecs+" AS rs1 INNER JOIN "+constants.TABLE_NAME_RESERVE+" AS res ON rs."+constants.NUMBER_ROOM+"="+"res."+constants.NUMBER_ROOM +" WHERE res."+constants.DATE_START+">='"+dateStart+"')",null);
-        if(cursor.moveToFirst()) {
+        Cursor cursor = db.rawQuery("SELECT rs." + constants.NUMBER_ROOM + " FROM " + constants.TABLE_NAME_roomSpecs + " AS rs WHERE rs." + constants.ROOM_TYPE + "=" + type.trim() + " AND rs." + constants.NUMBER_ROOM + " NOT IN ( SELECT rs1." + constants.NUMBER_ROOM + " FROM " + constants.TABLE_NAME_roomSpecs + " AS rs1 INNER JOIN " + constants.TABLE_NAME_RESERVE + " AS res ON rs." + constants.NUMBER_ROOM + "=" + "res." + constants.NUMBER_ROOM + " WHERE res." + constants.DATE_START + ">='" + dateStart + "')", null);
+        if (cursor.moveToFirst()) {
             do {
                 availableRooms.add(cursor.getString(cursor.getColumnIndex(constants.NUMBER_ROOM)));
             }
@@ -294,20 +297,33 @@ public class databaseHandler extends SQLiteOpenHelper {
     public Room getRoom(String roomNumber) {
         Room room = new Room();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + constants.TABLE_NAME_roomSpecs + " AS rs INNER JOIN "+ constants.TABLE_NAME_room +" AS res ON rs."+constants.ROOM_TYPE+"=res."+constants.ROOM_TYPE +" WHERE rs."+constants.NUMBER_ROOM+"="+roomNumber.trim().toString(),null);
-        if(cursor.moveToFirst()){
-            do{
+        Cursor cursor = db.rawQuery("SELECT * FROM " + constants.TABLE_NAME_roomSpecs + " AS rs INNER JOIN " + constants.TABLE_NAME_room + " AS res ON rs." + constants.ROOM_TYPE + "=res." + constants.ROOM_TYPE + " WHERE rs." + constants.NUMBER_ROOM + "=" + roomNumber.trim().toString(), null);
+        if (cursor.moveToFirst()) {
+            do {
                 room.setRoomNumber(roomNumber);
                 room.setBed(cursor.getString(cursor.getColumnIndex(constants.NUMBER_BED)));
                 room.setType(cursor.getString(cursor.getColumnIndex(constants.ROOM_TYPE)));
                 room.setView(cursor.getString(cursor.getColumnIndex(constants.VIEW)));
                 room.setPrice(Integer.parseInt(cursor.getString(cursor.getColumnIndex(constants.PRICE))));
             }
-            while(cursor.moveToNext());
+            while (cursor.moveToNext());
         }
         cursor.close();
         db.close();
         return room;
     }
 
+    public int getRoomPrice(String type) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        int price=0;
+        Cursor cursor = db.rawQuery("SELECT " + constants.PRICE + " FROM " + constants.TABLE_NAME_room + " WHERE "+constants.ROOM_TYPE + "=" + type.trim().toString(), null);
+        if (cursor.moveToFirst()) {
+            do {
+                price = Integer.parseInt(cursor.getString(cursor.getColumnIndex(constants.PRICE)));
+            }
+            while (cursor.moveToNext());
+        }
+        return price;
+    }
 }
+
