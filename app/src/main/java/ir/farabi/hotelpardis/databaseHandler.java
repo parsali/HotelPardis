@@ -11,6 +11,7 @@ import android.util.Log;
 import android.database.MatrixCursor;
 
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,11 +48,12 @@ public class databaseHandler extends SQLiteOpenHelper {
                 + constants.CUSTOMER_PASSWORD + " varchar(50),"
                 + constants.CUSTOMER_CODE + " varchar(10));";
         String CREATE_RESERVE_TABLE = "CREATE TABLE " + constants.TABLE_NAME_RESERVE + "("
-                + constants.NUMBER_ROOM + " varchar(3),"
-                + constants.CUSTOMER_ID + " int,"
-                + constants.DATE_START + " DATE"
-                + constants.DATE_END + " DATE,"
-                + " FOREIGN KEY (" + constants.NUMBER_ROOM + ") REFERENCES " + constants.TABLE_NAME_roomSpecs + "(" + constants.NUMBER_ROOM + ")"
+                + constants.NUMBER_ROOM + " varchar(3) ,"
+                + constants.CUSTOMER_ID + " int ,"
+                + constants.DATE_START + " DATE ,"
+                + constants.DATE_END + " DATE , "
+                + "PRIMARY KEY("+constants.NUMBER_ROOM+","+constants.CUSTOMER_ID+","+constants.DATE_START+","+constants.DATE_END+")"+
+                 " FOREIGN KEY (" + constants.NUMBER_ROOM + ") REFERENCES " + constants.TABLE_NAME_roomSpecs + "(" + constants.NUMBER_ROOM + ")"
                 + " FOREIGN KEY (" + constants.CUSTOMER_ID + ") REFERENCES " + constants.TABLE_NAME_CUSTOMER + "(" + constants.CUSTOMER_ID + "));";
         ;
         db.execSQL(CREATE_ROOM_TABLE);
@@ -324,6 +326,21 @@ public class databaseHandler extends SQLiteOpenHelper {
             while (cursor.moveToNext());
         }
         return price;
+    }
+    public void reserve(String number_room,String code_customer,String  dateStart,String dateEnd){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(constants.CUSTOMER_ID,code_customer);
+        values.put(constants.NUMBER_ROOM, number_room);
+        values.put(constants.DATE_START,dateStart);
+        values.put(constants.DATE_END,dateEnd);
+//        db.update(constants.TABLE_NAME_RESERVE, values, constants.CUSTOMER_ID +" = ?"+" and "+ constants.NUMBER_ROOM +" = ?"+" and "+constants.DATE_START +" = ?"+" and "+constants.DATE_END+" = ?",
+//                new String[]{code_customer,number_room,dateStart,dateEnd});
+        db.insert(constants.TABLE_NAME_RESERVE,null,values);
+        db.close();
+
+
     }
 }
 

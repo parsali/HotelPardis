@@ -34,6 +34,10 @@ public class moreInfo extends AppCompatActivity {
     ImageView backdrop;
     TextView TextVurud;
     TextView TextKHuruj;
+    TextView hazine;
+    databaseHandler databaseHandler;
+    String startDate;
+    String endDate;
     int type;
 
     /**
@@ -54,7 +58,8 @@ public class moreInfo extends AppCompatActivity {
         ab.setDisplayHomeAsUpEnabled(true);
         ab.setDisplayShowHomeEnabled(true);
         Bundle bundle = getIntent().getExtras();
-
+        databaseHandler=new databaseHandler(getApplicationContext());
+        hazine = (TextView)findViewById(R.id.hazine);
         type= bundle.getInt("type");
         vurud = (Button) findViewById(R.id.vurud);
         khuruj = (Button) findViewById(R.id.khuruj);
@@ -69,6 +74,7 @@ public class moreInfo extends AppCompatActivity {
         if(type==1){
             backdrop.setImageResource(R.drawable.luxury);
             info_text.setText("لوکس");
+
         }
         if(type==2){
             backdrop.setImageResource(R.drawable.special);
@@ -79,7 +85,7 @@ public class moreInfo extends AppCompatActivity {
             info_text.setText("اقتصادی");
         }
 
-
+        hazine.setText(databaseHandler.getRoomPrice(String.valueOf(type))+" تومان ");
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
@@ -94,11 +100,14 @@ public class moreInfo extends AppCompatActivity {
                                                                                  PersianCalendar selected = new PersianCalendar();
                                                                                  selected.setPersianDate(year,monthOfYear,dayOfMonth);
                                                                                  day.setText(selected.getPersianWeekDayName());
-                                                                                 date.setText(dayOfMonth+" "+getMounth(monthOfYear));
+                                                                                 date.setText(dayOfMonth + " " + getMounth(monthOfYear));
                                                                                  day.setVisibility(View.VISIBLE);
                                                                                  date.setVisibility(View.VISIBLE);
                                                                                  vurud.setVisibility(View.INVISIBLE);
                                                                                  TextVurud.setVisibility(View.VISIBLE);
+                                                                                 Roozh jCal= new Roozh();
+                                                                                 jCal.PersianToGregorian(year, monthOfYear, dayOfMonth);
+                                                                                 startDate=jCal.toString();
                                                                              }
                                                                          }, now.getPersianYear(),
                 now.getPersianMonth(),
@@ -117,11 +126,14 @@ public class moreInfo extends AppCompatActivity {
                                                                                  PersianCalendar selected = new PersianCalendar();
                                                                                  selected.setPersianDate(year,monthOfYear,dayOfMonth);
                                                                                  khuruj_day.setText(selected.getPersianWeekDayName());
-                                                                                 khuruj_date.setText(dayOfMonth+" "+getMounth(monthOfYear));
+                                                                                 khuruj_date.setText(dayOfMonth + " " + getMounth(monthOfYear));
                                                                                  khuruj_day.setVisibility(View.VISIBLE);
                                                                                  khuruj_date.setVisibility(View.VISIBLE);
                                                                                  khuruj.setVisibility(View.INVISIBLE);
                                                                                  TextKHuruj.setVisibility(View.VISIBLE);
+                                                                                 Roozh jCal= new Roozh();
+                                                                                 jCal.PersianToGregorian(year, monthOfYear, dayOfMonth);
+                                                                                 endDate=jCal.toString();
 
                                                                              }
                                                                          }, now.getPersianYear(),
@@ -201,5 +213,13 @@ public class moreInfo extends AppCompatActivity {
         );
         AppIndex.AppIndexApi.end(client, viewAction);
         client.disconnect();
+    }
+    public void reserve(View v){
+        if(day.getText()!=""){
+        String room= databaseHandler.getAvailableRooms(String.valueOf(type),startDate,endDate).get(0);
+
+                databaseHandler.reserve(room,String.valueOf(1),startDate,endDate);
+        Toast.makeText(getApplicationContext(),room,Toast.LENGTH_LONG).show();}
+
     }
 }
