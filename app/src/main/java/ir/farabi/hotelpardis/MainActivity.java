@@ -346,4 +346,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
         intent.putExtra("type",3);
         startActivity(intent);
     }
+    public void cancel(View v){
+
+    }
 }

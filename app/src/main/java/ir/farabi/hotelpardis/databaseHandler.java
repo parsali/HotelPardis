@@ -342,5 +342,30 @@ public class databaseHandler extends SQLiteOpenHelper {
 
 
     }
+    public ArrayList<resereveModule> getReserves(String code_customer){
+        SQLiteDatabase db = this.getReadableDatabase();
+        resereveModule reserve = new resereveModule();
+        ArrayList<resereveModule> arrayList=new ArrayList<resereveModule>();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + constants.TABLE_NAME_RESERVE + " AS reserve WHERE reserve." + constants.CUSTOMER_ID + "=" + code_customer.trim().toString(),null);
+        if (cursor.moveToFirst()) {
+            do {
+                reserve.setRoomNumber(cursor.getString(cursor.getColumnIndex(constants.NUMBER_ROOM)));
+                reserve.setId(code_customer);
+                reserve.setStartDate(cursor.getString(cursor.getColumnIndex(constants.DATE_START)));
+                reserve.setEndDate(cursor.getString(cursor.getColumnIndex(constants.DATE_END)));
+                arrayList.add(reserve);
+            }
+            while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return arrayList;
+    }
+    public void deleteFromReserve(String number_room,String code_customer,String  dateStart,String dateEnd){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("delete from "+ constants.TABLE_NAME_RESERVE+"  WHERE "+ constants.CUSTOMER_ID + " = " + code_customer.trim().toString() +" and "+constants.NUMBER_ROOM+
+                " = " + number_room.trim().toString());
+                //+" and " +constants.DATE_START+" = " + dateStart+" and "+constants.DATE_END+" = " + dateEnd);
+    }
 }
 

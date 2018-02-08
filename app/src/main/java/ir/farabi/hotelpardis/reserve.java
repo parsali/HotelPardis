@@ -4,9 +4,15 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import java.util.ArrayList;
 
 
 /**
@@ -22,6 +28,26 @@ public class reserve extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    ListView listView;
+    databaseHandler dba;
+    Button cancel;
+
+
+    /**
+     * Find the Views in the layout<br />
+     * <br />
+     * Auto-created on 2018-02-08 23:48:42 by Android Layout Finder
+     * (http://www.buzzingandroid.com/tools/android-layout-finder)
+     */
+
+
+    /**
+     * Handle button click events<br />
+     * <br />
+     * Auto-created on 2018-02-08 23:48:42 by Android Layout Finder
+     * (http://www.buzzingandroid.com/tools/android-layout-finder)
+     */
+
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -64,7 +90,30 @@ public class reserve extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_reserve, container, false);
+        View view;
+        view = inflater.inflate(R.layout.fragment_reserve, container, false);
+        listView = (ListView) view.findViewById(R.id.list);
+        cancel=(Button)view.findViewById(R.id.cancel);
+
+        ArrayList<Room> rooms = new ArrayList<Room>();
+        ArrayList<User> users = new ArrayList<User>();
+
+        dba = new databaseHandler(inflater.getContext());
+        User user = dba.getUser(String.valueOf(1));
+        ArrayList<resereveModule> resereveModule = dba.getReserves(String.valueOf(1));
+        if (resereveModule != null) {
+            for (int i = 0; i < resereveModule.size(); i++) {
+                Room room= dba.getRoom(resereveModule.get(i).getRoomNumber());
+
+
+                rooms.add(room);
+            }
+        }
+        CustomListViewAdapter customListView = new CustomListViewAdapter(getContext(),user,rooms,resereveModule );
+        listView.setAdapter(customListView);
+
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -96,7 +145,7 @@ public class reserve extends Fragment {
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p/>
+     * <p>
      * See the Android Training lesson <a href=
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
