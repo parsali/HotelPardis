@@ -8,7 +8,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import android.database.MatrixCursor;
+
+
+import java.util.Date;
 import java.util.ArrayList;
+import java.util.List;
+
 import ir.farabi.hotelpardis.User;
 
 
@@ -25,28 +30,27 @@ public class databaseHandler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_ROOM_TABLE = "CREATE TABLE " + constants.TABLE_NAME_room + "("
-                + constants.NUMBER_ROOM + " varchar(3) PRIMARY KEY, " + constants.PERSON_NAME +
-                " TEXT, " + constants.PRICE + " TEXT );";
-        String CREATE_ROOMSPEC_TABLE = "CREATE TABLE "+
-                constants.TABLE_NAME_roomSpecs+
-                "("+constants.NUMBER_ROOM + " varchar(3), "
-                 + constants.NUMBER_BED +
-                " char(1)," +constants.ROOM_TYPE+
-                " char(1),"+constants.VIEW +" char(1),"
-                + " FOREIGN KEY ("+constants.NUMBER_ROOM+") REFERENCES "+constants.TABLE_NAME_room+"("+constants.NUMBER_ROOM+"));";;
-        String CREATE_CUSTOMER_TABLE="CREATE TABLE "+constants.TABLE_NAME_CUSTOMER +"("
+                + constants.ROOM_TYPE + " char(1) PRIMARY KEY, "
+                + constants.PERSON_NAME + " TEXT, "
+                + constants.PRICE + " int );";
+        String CREATE_ROOMSPEC_TABLE = "CREATE TABLE "+ constants.TABLE_NAME_roomSpecs+ "("
+                + constants.NUMBER_ROOM + " varchar(3) PRIMARY KEY, "
+                + constants.NUMBER_BED + " char(1),"
+                + constants.ROOM_TYPE + " char(1),"
+                + constants.VIEW + " char(1),"
+                + " FOREIGN KEY ("+constants.ROOM_TYPE+") REFERENCES "+constants.TABLE_NAME_room+"("+constants.ROOM_TYPE+"));";
+        String CREATE_CUSTOMER_TABLE="CREATE TABLE "+ constants.TABLE_NAME_CUSTOMER +"("
                 + constants.CUSTOMER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + constants.CUSTOMER_NAME + " nvarchar(50),"
                 + constants.CUSTOMER_USERNAME + " varchar(50),"
                 + constants.CUSTOMER_PASSWORD + " varchar(50),"
                 + constants.CUSTOMER_CODE + " varchar(10));";
-        String CREATE_RESERVE_TABLE="CREATE TABLE "
-                + constants.TABLE_NAME_RESERVE+"("
+        String CREATE_RESERVE_TABLE="CREATE TABLE " + constants.TABLE_NAME_RESERVE+"("
                 + constants.NUMBER_ROOM + " varchar(3),"
-                + constants.CUSTOMER_ID + " varchar(10),"
+                + constants.CUSTOMER_ID + " int,"
                 + constants.DATE_START + " DATE"
                 + constants.DATE_END + " DATE,"
-                + " FOREIGN KEY ("+constants.NUMBER_ROOM+") REFERENCES "+constants.TABLE_NAME_room+"("+constants.NUMBER_ROOM+")"
+                + " FOREIGN KEY ("+constants.NUMBER_ROOM+") REFERENCES "+constants.TABLE_NAME_roomSpecs+"("+constants.NUMBER_ROOM+")"
                 + " FOREIGN KEY ("+constants.CUSTOMER_ID+") REFERENCES "+constants.TABLE_NAME_CUSTOMER+"("+constants.CUSTOMER_ID+"));";;
         db.execSQL(CREATE_ROOM_TABLE);
         db.execSQL(CREATE_ROOMSPEC_TABLE);
@@ -67,6 +71,24 @@ public class databaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         String sql = "INSERT INTO customer (customer_name,customer_username,customer_password,customer_code) " +
                 "VALUES ('admin','admin','admin','1234')";
+        db.execSQL(sql);
+        sql = "INSERT INTO room VALUES ('1','Eco',30000)";
+        db.execSQL(sql);
+        sql = "INSERT INTO room VALUES ('2','Special',50000)";
+        db.execSQL(sql);
+        sql = "INSERT INTO room VALUES ('3','Lux',80000)";
+        db.execSQL(sql);
+        sql = "INSERT INTO room_spec VALUES ('100','1','1','0')";
+        db.execSQL(sql);
+        sql = "INSERT INTO room_spec VALUES ('101','2','1','1')";
+        db.execSQL(sql);
+        sql = "INSERT INTO room_spec VALUES ('200','1','2','0')";
+        db.execSQL(sql);
+        sql = "INSERT INTO room_spec VALUES ('201','2','2','1')";
+        db.execSQL(sql);
+        sql = "INSERT INTO room_spec VALUES ('300','1','3','1')";
+        db.execSQL(sql);
+        sql = "INSERT INTO room_spec VALUES ('301','2','3','1')";
         db.execSQL(sql);
         db.close();
     }
@@ -232,6 +254,60 @@ public class databaseHandler extends SQLiteOpenHelper {
         return user;
     }
 
+    public List<Room> getAllRooms(String type){
+        List<Room> roomList = new ArrayList<Room>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + constants.TABLE_NAME_roomSpecs + " INNER JOIN " + constants.TABLE_NAME_room + " ON "+ constants.TABLE_NAME_room+"."+constants.ROOM_TYPE + "="+ constants.TABLE_NAME_roomSpecs+"."+constants.ROOM_TYPE + " WHERE "+ constants.TABLE_NAME_roomSpecs+"."+constants.ROOM_TYPE +"="+type.trim(),null);
 
+        if(cursor.moveToFirst()) {
+            do {
+                Room room = new Room();
+                room.setRoomNumber(cursor.getString(cursor.getColumnIndex(constants.NUMBER_ROOM)));
+                room.setBed(cursor.getString(cursor.getColumnIndex(constants.NUMBER_BED)));
+                room.setType(cursor.getString(cursor.getColumnIndex(constants.ROOM_TYPE)));
+                room.setView(cursor.getString(cursor.getColumnIndex(constants.VIEW)));
+                room.setPrice(Integer.parseInt(cursor.getString(cursor.getColumnIndex(constants.PRICE))));
+                roomList.add(room);
+            }
+            while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return roomList;
+    }
+
+    public List<String> getAvailableRooms(String type, String dateStart, String dateEnd){
+        List availableRooms = new ArrayList<String>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT rs."+constants.NUMBER_ROOM +" FROM " + constants.TABLE_NAME_roomSpecs + " AS rs WHERE rs."+constants.ROOM_TYPE+"="+type.trim()+" AND rs."+constants.NUMBER_ROOM+" NOT IN ( SELECT rs1."+constants.NUMBER_ROOM+" FROM "+constants.TABLE_NAME_roomSpecs+" AS rs1 INNER JOIN "+constants.TABLE_NAME_RESERVE+" AS res ON rs."+constants.NUMBER_ROOM+"="+"res."+constants.NUMBER_ROOM +" WHERE res."+constants.DATE_START+">='"+dateStart+"')",null);
+        if(cursor.moveToFirst()) {
+            do {
+                availableRooms.add(cursor.getString(cursor.getColumnIndex(constants.NUMBER_ROOM)));
+            }
+            while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return availableRooms;
+    }
+
+    public Room getRoom(String roomNumber) {
+        Room room = new Room();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + constants.TABLE_NAME_roomSpecs + " AS rs INNER JOIN "+ constants.TABLE_NAME_room +" AS res ON rs."+constants.ROOM_TYPE+"=res."+constants.ROOM_TYPE +" WHERE rs."+constants.NUMBER_ROOM+"="+roomNumber.trim().toString(),null);
+        if(cursor.moveToFirst()){
+            do{
+                room.setRoomNumber(roomNumber);
+                room.setBed(cursor.getString(cursor.getColumnIndex(constants.NUMBER_BED)));
+                room.setType(cursor.getString(cursor.getColumnIndex(constants.ROOM_TYPE)));
+                room.setView(cursor.getString(cursor.getColumnIndex(constants.VIEW)));
+                room.setPrice(Integer.parseInt(cursor.getString(cursor.getColumnIndex(constants.PRICE))));
+            }
+            while(cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return room;
+    }
 
 }
