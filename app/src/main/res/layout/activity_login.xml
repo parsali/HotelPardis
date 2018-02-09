@@ -78,6 +78,17 @@
             android:onClick="onClickLogin"/>
 
 
+        <Button
+            android:text="ثبت نام"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/signUp"
+            android:background="@color/mdtp_transparent_black"
+            android:layout_marginTop="10dp"
+            android:textColor="@android:color/white"
+            android:textSize="20dp"
+            android:onClick="onClickSignUp"/>
+
         <TextView
             android:text="گذرواژه خود را فراموش کرده اید؟"
             android:layout_width="match_parent"

@@ -35,10 +35,11 @@
 
         <activity
             android:name=".LoginActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".AndroidDatabaseManager"
-            android:theme="@style/Theme.AppCompat.Light"/>
+            android:theme="@style/Theme.AppCompat.Light" />
+        <activity android:name=".SignUpActivity"></activity>
     </application>
 
 </manifest>

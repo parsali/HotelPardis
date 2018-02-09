@@ -8,11 +8,11 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="ir.farabi.hotelpardis.EmptyRoom"
+    tools:context="ir.farabi.hotelpardis.SignUpActivity"
     android:background="@color/colorPrimary">
 
     <TextView
-        android:text="ویرایش مشخصات"
+        android:text="ثبت نام"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -81,7 +81,7 @@
         android:gravity="right"/>
 
     <Button
-        android:text="ویرایش مشخصات"
+        android:text="ثبت نام"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="34dp"
@@ -91,14 +91,14 @@
         android:background="@color/mdtp_transparent_black"
         android:textColor="@android:color/white"
         android:textSize="20dp"
-        android:onClick="onClickEditProfile"/>
+        android:onClick="onClickSignUp"/>
 
     <TextView
         android:text="نام به درستی وارد نشده است"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/name"
-        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
         android:id="@+id/wrongName"
         android:textColor="@android:color/holo_red_dark"
         android:visibility="gone"/>
@@ -108,7 +108,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/username"
-        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
         android:id="@+id/wrongUsername"
         android:textColor="@android:color/holo_red_dark"
         android:visibility="gone"/>
@@ -118,7 +118,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/password"
-        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
         android:id="@+id/wrongPassword"
         android:textColor="@android:color/holo_red_dark"
         android:visibility="gone"/>
@@ -128,7 +128,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/code"
-        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
         android:id="@+id/wrongCode"
         android:textColor="@android:color/holo_red_dark"
         android:visibility="gone"/>

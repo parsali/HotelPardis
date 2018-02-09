@@ -1,12 +1,21 @@
 package ir.farabi.hotelpardis;
 
 import android.content.Context;
+import android.database.DatabaseErrorHandler;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.HashMap;
 
 
 /**
@@ -18,6 +27,17 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class EmptyRoom extends Fragment {
+    EditText name;
+    EditText username;
+    EditText password;
+    EditText code;
+    TextView wrongName;
+    TextView wrongUsername;
+    TextView wrongPassword;
+    TextView wrongCode;
+    Button edit;
+    SessionManager session;
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -61,18 +81,94 @@ public class EmptyRoom extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_empty_room, container, false);
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_empty_room, container, false);
+
+        name = (EditText) rootView.findViewById(R.id.name);
+        username = (EditText) rootView.findViewById(R.id.username);
+        password = (EditText) rootView.findViewById(R.id.password);
+        code = (EditText) rootView.findViewById(R.id.code);
+        wrongName = (TextView) rootView.findViewById(R.id.wrongName);
+        wrongUsername = (TextView) rootView.findViewById(R.id.wrongUsername);
+        wrongPassword = (TextView) rootView.findViewById(R.id.wrongPassword);
+        wrongCode = (TextView) rootView.findViewById(R.id.wrongCode);
+        edit = (Button) rootView.findViewById(R.id.signUp);
+
+        session = new SessionManager(inflater.getContext());
+        HashMap<String, String> userHash = session.getUserDetails();
+        databaseHandler db = new databaseHandler(inflater.getContext());
+        User userDetails = new User();
+        userDetails = db.getUser(userHash.get(SessionManager.USERNAME));
+
+        name.setText(userDetails.getName());
+        username.setText(userDetails.getUsername());
+        code.setText(userDetails.getCode());
+
+
+        edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean nameCheck=false;
+                boolean passwordCheck=false;
+                boolean codeCheck=false;
+                boolean usernameCheck=false;
+
+                session = new SessionManager(inflater.getContext());
+                HashMap<String, String> userHash = session.getUserDetails();
+                databaseHandler db = new databaseHandler(inflater.getContext());
+                User userDetails = new User();
+                userDetails = db.getUser(userHash.get(SessionManager.USERNAME));
+
+                if(name.getText().toString().length()>1 && name.getText().toString().length()<50){
+                    nameCheck=true;
+                    wrongName.setVisibility(View.GONE);
+                }
+                else wrongName.setVisibility(View.VISIBLE);
+
+                if(username.getText().toString().matches("^[a-zA-Z]+([.]?[a-zA-Z0-9]+)*$")){
+                    if(db.checkUser(username.getText().toString()) && !(username.getText().toString().equals(userDetails.getUsername()))) {
+                        wrongUsername.setText("متاسفانه این نام کاربری قبلا گرفته شده است");
+                        wrongUsername.setVisibility(View.VISIBLE);
+                        usernameCheck =false;
+                    }
+                    else if(username.getText().length()<50) {
+                        usernameCheck=true;
+                        wrongUsername.setVisibility(View.GONE);
+                    }
+                }
+                else {
+                    wrongUsername.setText("نام کاربری به درستی وارد نشده است");
+                    wrongUsername.setVisibility(View.VISIBLE);
+                }
+
+                if(password.getText().toString().length()>=8 && password.getText().length()<50){
+                    passwordCheck=true;
+                    wrongPassword.setVisibility(View.GONE);
+                }
+                else wrongPassword.setVisibility(View.VISIBLE);
+
+                if(code.getText().toString().matches("^[0-9]{10}")){
+                    codeCheck=true;
+                    wrongCode.setVisibility(View.GONE);
+                }
+                else wrongCode.setVisibility(View.VISIBLE);
+
+                if(nameCheck && passwordCheck && codeCheck && usernameCheck){
+                    User user = new User();
+                    user.setName(name.getText().toString());
+                    user.setUsername(username.getText().toString());
+                    user.setPassword(password.getText().toString());
+                    user.setCode(code.getText().toString());
+                    user.setId(userDetails.getId());
+                    db.updateUser(user);
+                    Toast.makeText(inflater.getContext(),"اطلاعات بروزرسانی شد",Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+        return rootView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
 
     @Override
     public void onAttach(Context context) {
