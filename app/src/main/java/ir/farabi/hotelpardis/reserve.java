@@ -5,14 +5,17 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 /**
@@ -23,7 +26,7 @@ import java.util.ArrayList;
  * Use the {@link reserve#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class reserve extends Fragment {
+public class reserve extends Fragment implements refresh {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -31,6 +34,7 @@ public class reserve extends Fragment {
     ListView listView;
     databaseHandler dba;
     Button cancel;
+    Context context;
 
 
     /**
@@ -93,27 +97,42 @@ public class reserve extends Fragment {
         View view;
         view = inflater.inflate(R.layout.fragment_reserve, container, false);
         listView = (ListView) view.findViewById(R.id.list);
-        cancel=(Button)view.findViewById(R.id.cancel);
-
-        ArrayList<Room> rooms = new ArrayList<Room>();
-        ArrayList<User> users = new ArrayList<User>();
-
-        dba = new databaseHandler(inflater.getContext());
-        User user = dba.getUser(String.valueOf(1));
-        ArrayList<resereveModule> resereveModule = dba.getReserves(String.valueOf(1));
-        if (resereveModule != null) {
-            for (int i = 0; i < resereveModule.size(); i++) {
-                Room room= dba.getRoom(resereveModule.get(i).getRoomNumber());
-
-
-                rooms.add(room);
-            }
-        }
-        CustomListViewAdapter customListView = new CustomListViewAdapter(getContext(),user,rooms,resereveModule );
-        listView.setAdapter(customListView);
+        cancel = (Button) view.findViewById(R.id.cancel);
+        context = inflater.getContext();
+        refreshData();
 
 
         return view;
+    }
+
+    public void refreshData() {
+        SessionManager session = new SessionManager(context);
+        HashMap<String, String> userHash = session.getUserDetails();
+        String id = userHash.get(SessionManager.USER_ID);
+        dba = new databaseHandler(context);
+        ArrayList<Room> rooms = new ArrayList<Room>();
+        ArrayList<User> users = new ArrayList<User>();
+        User user = dba.getUser(Integer.parseInt(id));
+        ArrayList<resereveModule> resereveModule = dba.getReserves(id);
+        if(resereveModule.size()==0)
+            Toast.makeText(context,"nothing to show",Toast.LENGTH_LONG).show();
+
+
+            for (int i = 0; i < resereveModule.size(); i++) {
+               Log.d( "reserveModule",resereveModule.get(i).getRoomNumber());
+                Room room = dba.getRoom(resereveModule.get(i).getRoomNumber());
+
+                Log.d("room",room.getType());
+                rooms.add(room);
+            }
+
+        CustomListViewAdapter customListView = new CustomListViewAdapter(context, user, rooms, resereveModule, new refresh() {
+            @Override
+            public void refresh() {
+                refreshData();
+            }
+        });
+        listView.setAdapter(customListView);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -138,6 +157,11 @@ public class reserve extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void refresh() {
+        refreshData();
     }
 
     /**

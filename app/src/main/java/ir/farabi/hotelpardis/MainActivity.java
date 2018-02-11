@@ -28,6 +28,8 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
+import java.util.HashMap;
+
 public class MainActivity extends AppCompatActivity implements HomeFragment.OnFragmentInteractionListener,EmptyRoom.OnFragmentInteractionListener,
                                                                 contactUs.OnFragmentInteractionListener,aboutUs.OnFragmentInteractionListener,reserve.OnFragmentInteractionListener {
     databaseHandler DB;
@@ -50,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
     public static String CURRENT_TAG = TAG_HOME;
     private String[] activityTitles;
     ActionBarDrawerToggle actionBarDrawerToggle;
+    SessionManager session;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
         txtWebsite = (TextView) navHeader.findViewById(R.id.website);
         imgProfile = (ImageView) navHeader.findViewById(R.id.img_profile);
         activityTitles = getResources().getStringArray(R.array.nav_item_activity_titles);
+        session = new SessionManager(getApplicationContext());
 
 
 
@@ -89,9 +93,15 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
 
     }
     private void loadNavHeader() {
+        databaseHandler db = new databaseHandler(this);
+        HashMap<String,String> userHash = session.getUserDetails();
+        int userId = Integer.parseInt(userHash.get(SessionManager.USER_ID));
+        User user = db.getUser(Integer.parseInt(userHash.get(SessionManager.USER_ID)));
+
         // name, website
-        txtName.setText("Ravi Tamada");
-        txtWebsite.setText("www.androidhive.info");
+        txtName.setText(user.getName());
+        //txtWebsite.setText("www.androidhive.info");
+        txtWebsite.setVisibility(View.GONE);
 
         // loading header background image
         Glide.with(this).load(R.drawable.untitled)

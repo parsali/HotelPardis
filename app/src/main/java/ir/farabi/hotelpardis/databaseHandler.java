@@ -52,8 +52,8 @@ public class databaseHandler extends SQLiteOpenHelper {
                 + constants.CUSTOMER_ID + " int ,"
                 + constants.DATE_START + " DATE ,"
                 + constants.DATE_END + " DATE , "
-                + "PRIMARY KEY("+constants.NUMBER_ROOM+","+constants.CUSTOMER_ID+","+constants.DATE_START+","+constants.DATE_END+")"+
-                 " FOREIGN KEY (" + constants.NUMBER_ROOM + ") REFERENCES " + constants.TABLE_NAME_roomSpecs + "(" + constants.NUMBER_ROOM + ")"
+                + "PRIMARY KEY(" + constants.NUMBER_ROOM + "," + constants.CUSTOMER_ID + "," + constants.DATE_START + "," + constants.DATE_END + ")" +
+                " FOREIGN KEY (" + constants.NUMBER_ROOM + ") REFERENCES " + constants.TABLE_NAME_roomSpecs + "(" + constants.NUMBER_ROOM + ")"
                 + " FOREIGN KEY (" + constants.CUSTOMER_ID + ") REFERENCES " + constants.TABLE_NAME_CUSTOMER + "(" + constants.CUSTOMER_ID + "));";
         ;
         db.execSQL(CREATE_ROOM_TABLE);
@@ -259,6 +259,40 @@ public class databaseHandler extends SQLiteOpenHelper {
         return user;
     }
 
+    public User getUser(int id) {
+        User user = new User();
+        String[] columns = {
+                constants.CUSTOMER_ID,
+                constants.CUSTOMER_NAME,
+                constants.CUSTOMER_USERNAME,
+                constants.CUSTOMER_PASSWORD,
+                constants.CUSTOMER_CODE
+        };
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selection = constants.CUSTOMER_ID + " = ?";
+        String[] selectionArgs = {String.valueOf(id)};
+        Cursor cursor = db.query(constants.TABLE_NAME_CUSTOMER, //Table to query
+                columns,                    //columns to return
+                selection,                  //columns for the WHERE clause
+                selectionArgs,              //The values for the WHERE clause
+                null,                       //group the rows
+                null,                       //filter by row groups
+                null);
+        if (cursor.moveToFirst()) {
+            do {
+                user.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(constants.CUSTOMER_ID))));
+                user.setName(cursor.getString(cursor.getColumnIndex(constants.CUSTOMER_NAME)));
+                user.setUsername(cursor.getString(cursor.getColumnIndex(constants.CUSTOMER_USERNAME)));
+                user.setPassword(cursor.getString(cursor.getColumnIndex(constants.CUSTOMER_PASSWORD)));
+                user.setCode(cursor.getString(cursor.getColumnIndex(constants.CUSTOMER_CODE)));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return user;
+    }
+
+
     public List<Room> getAllRooms(String type) {
         List<Room> roomList = new ArrayList<Room>();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -284,7 +318,7 @@ public class databaseHandler extends SQLiteOpenHelper {
     public List<String> getAvailableRooms(String type, String dateStart, String dateEnd) {
         List availableRooms = new ArrayList<String>();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT rs." + constants.NUMBER_ROOM + " FROM " + constants.TABLE_NAME_roomSpecs + " AS rs WHERE rs." + constants.ROOM_TYPE + "=" + type.trim() + " AND rs." + constants.NUMBER_ROOM + " NOT IN ( SELECT rs1." + constants.NUMBER_ROOM + " FROM " + constants.TABLE_NAME_roomSpecs + " AS rs1 INNER JOIN " + constants.TABLE_NAME_RESERVE + " AS res ON rs." + constants.NUMBER_ROOM + "=" + "res." + constants.NUMBER_ROOM + " WHERE res." + constants.DATE_START + ">='" + dateStart + "')", null);
+        Cursor cursor = db.rawQuery("SELECT rs." + constants.NUMBER_ROOM + " FROM " + constants.TABLE_NAME_roomSpecs + " AS rs WHERE rs." + constants.ROOM_TYPE + "=" + type.trim() + " AND rs." + constants.NUMBER_ROOM + " NOT IN ( SELECT rs1." + constants.NUMBER_ROOM + " FROM " + constants.TABLE_NAME_roomSpecs + " AS rs1 INNER JOIN " + constants.TABLE_NAME_RESERVE + " AS res ON rs." + constants.NUMBER_ROOM + "=" + "res." + constants.NUMBER_ROOM + " WHERE res." + constants.DATE_START + ">='" + dateStart +"' AND res."+constants.DATE_END+"<='"+dateEnd +"')", null);
         if (cursor.moveToFirst()) {
             do {
                 availableRooms.add(cursor.getString(cursor.getColumnIndex(constants.NUMBER_ROOM)));
@@ -317,8 +351,8 @@ public class databaseHandler extends SQLiteOpenHelper {
 
     public int getRoomPrice(String type) {
         SQLiteDatabase db = this.getReadableDatabase();
-        int price=0;
-        Cursor cursor = db.rawQuery("SELECT " + constants.PRICE + " FROM " + constants.TABLE_NAME_room + " WHERE "+constants.ROOM_TYPE + "=" + type.trim().toString(), null);
+        int price = 0;
+        Cursor cursor = db.rawQuery("SELECT " + constants.PRICE + " FROM " + constants.TABLE_NAME_room + " WHERE " + constants.ROOM_TYPE + "=" + type.trim().toString(), null);
         if (cursor.moveToFirst()) {
             do {
                 price = Integer.parseInt(cursor.getString(cursor.getColumnIndex(constants.PRICE)));
@@ -327,45 +361,61 @@ public class databaseHandler extends SQLiteOpenHelper {
         }
         return price;
     }
-    public void reserve(String number_room,String code_customer,String  dateStart,String dateEnd){
+
+    public void reserve(String number_room, String code_customer, String dateStart, String dateEnd) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(constants.CUSTOMER_ID,code_customer);
+        values.put(constants.CUSTOMER_ID, code_customer);
         values.put(constants.NUMBER_ROOM, number_room);
-        values.put(constants.DATE_START,dateStart);
-        values.put(constants.DATE_END,dateEnd);
+        values.put(constants.DATE_START, dateStart);
+        values.put(constants.DATE_END, dateEnd);
 //        db.update(constants.TABLE_NAME_RESERVE, values, constants.CUSTOMER_ID +" = ?"+" and "+ constants.NUMBER_ROOM +" = ?"+" and "+constants.DATE_START +" = ?"+" and "+constants.DATE_END+" = ?",
 //                new String[]{code_customer,number_room,dateStart,dateEnd});
-        db.insert(constants.TABLE_NAME_RESERVE,null,values);
+        db.insert(constants.TABLE_NAME_RESERVE, null, values);
         db.close();
 
 
     }
-    public ArrayList<resereveModule> getReserves(String code_customer){
+
+    public ArrayList<resereveModule> getReserves(String code_customer
+    ) {
         SQLiteDatabase db = this.getReadableDatabase();
-        resereveModule reserve = new resereveModule();
-        ArrayList<resereveModule> arrayList=new ArrayList<resereveModule>();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + constants.TABLE_NAME_RESERVE + " AS reserve WHERE reserve." + constants.CUSTOMER_ID + "=" + code_customer.trim().toString(),null);
+
+        ArrayList<resereveModule> arrayList = new ArrayList<resereveModule>();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + constants.TABLE_NAME_RESERVE + " AS reserve WHERE reserve." + constants.CUSTOMER_ID + "=" + code_customer.trim().toString(), null);
         if (cursor.moveToFirst()) {
             do {
+                resereveModule reserve = new resereveModule();
                 reserve.setRoomNumber(cursor.getString(cursor.getColumnIndex(constants.NUMBER_ROOM)));
                 reserve.setId(code_customer);
                 reserve.setStartDate(cursor.getString(cursor.getColumnIndex(constants.DATE_START)));
                 reserve.setEndDate(cursor.getString(cursor.getColumnIndex(constants.DATE_END)));
-                arrayList.add(reserve);
+                Log.d("thisIsTheReserve", cursor.getString(cursor.getColumnIndex(constants.NUMBER_ROOM)));
+                        arrayList.add(reserve);
             }
             while (cursor.moveToNext());
         }
         cursor.close();
         db.close();
+        for (int i = 0; i < arrayList.size(); i++) {
+            Log.d("reserveArraylist", arrayList.get(i).getRoomNumber());
+        }
         return arrayList;
     }
-    public void deleteFromReserve(String number_room,String code_customer,String  dateStart,String dateEnd){
+
+    public void deleteFromReserve(String number_room, String code_customer, String dateStart, String dateEnd) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("delete from "+ constants.TABLE_NAME_RESERVE+"  WHERE "+ constants.CUSTOMER_ID + " = " + code_customer.trim().toString() +" and "+constants.NUMBER_ROOM+
-                " = " + number_room.trim().toString());
-                //+" and " +constants.DATE_START+" = " + dateStart+" and "+constants.DATE_END+" = " + dateEnd);
+
+
+
+        db.execSQL("delete from " + constants.TABLE_NAME_RESERVE + "  WHERE " +
+                constants.CUSTOMER_ID + " = " + code_customer
+                + " and "
+                + constants.NUMBER_ROOM
+                +" = " + number_room.trim().toString());
+              //  +" and " +constants.DATE_START+" = " + dateStart+" and "+constants.DATE_END+" = " + dateEnd);
+        db.close();
     }
 }
 

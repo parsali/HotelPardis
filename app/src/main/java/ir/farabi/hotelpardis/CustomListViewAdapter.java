@@ -1,7 +1,9 @@
 package ir.farabi.hotelpardis;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +35,7 @@ public class CustomListViewAdapter extends BaseAdapter {
     private Button cancel;
     private TextView price;
     databaseHandler db;
+    refresh refresh;
 
     ImageView image;
     int size;
@@ -46,12 +49,13 @@ public class CustomListViewAdapter extends BaseAdapter {
     User user;
 
 
-    public CustomListViewAdapter(Context context,User user,ArrayList<Room> rooms,ArrayList<resereveModule> resereveModule){
+    public CustomListViewAdapter(Context context,User user,ArrayList<Room> rooms,ArrayList<resereveModule> resereveModule,refresh refresh){
 
         mContext = context;
         this.user=user;
         this.rooms=rooms;
         this.resereveModules=resereveModule;
+        this.refresh=refresh;
 
 
 
@@ -77,12 +81,13 @@ public class CustomListViewAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        if(resereveModules.size()==0)
-            Toast.makeText(mContext,"nothing to show",Toast.LENGTH_LONG).show();
+       // if(resereveModules.size()==0)
+           // Toast.makeText(mContext,String.valueOf(position),Toast.LENGTH_LONG).show();
 
         View view = convertView;
 
         if (convertView == null){
+            Log.d("postirion",String.valueOf(position));
 
             view = inflater.inflate(R.layout.row,null);
 
@@ -100,12 +105,16 @@ public class CustomListViewAdapter extends BaseAdapter {
             textkhuruj.setText(resereveModules.get(position).getEndDate());
             price.setText(String.valueOf(rooms.get(position).getPrice()));
             typeInt=Integer.valueOf(rooms.get(position).getType());
+            Log.d("typeInt",String.valueOf(typeInt));
+            Log.d("userId",String.valueOf(user.getId()));
             cancel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    db.deleteFromReserve(rooms.get(position).getRoomNumber(),String.valueOf(user.getId()),resereveModules.get(position).getStartDate(),resereveModules.get(position).getEndDate());
-                    notifyDataSetChanged();
-                    Toast.makeText(mContext,"here",Toast.LENGTH_LONG).show();
+                    db.deleteFromReserve(rooms.get(position).getRoomNumber(), String.valueOf(user.getId()), resereveModules.get(position).getStartDate(), resereveModules.get(position).getEndDate());
+                   refresh.refresh();
+//                    reserve reserve = new reserve();
+//                    ((reserve)reserve).refresh();
+
                 }
             });
 
