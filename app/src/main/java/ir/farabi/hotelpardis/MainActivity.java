@@ -74,8 +74,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
         activityTitles = getResources().getStringArray(R.array.nav_item_activity_titles);
         session = new SessionManager(getApplicationContext());
 
-
-
+        session.checkLogin();
         loadNavHeader();
 
         // initializing navigation menu
@@ -304,6 +303,11 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
                 CURRENT_TAG = TAG_HOME;
                 loadHomeFragment();
                 return;
+            }
+            else{
+                session.logoutUser();
+                Intent i = new Intent(this,LoginActivity.class);
+                startActivity(i);
             }
 
     }

@@ -315,10 +315,10 @@ public class databaseHandler extends SQLiteOpenHelper {
         return roomList;
     }
 
-    public List<String> getAvailableRooms(String type, String dateStart, String dateEnd) {
+    public List<String> getAvailableRooms(String type,String bed,String dateStart, String dateEnd) {
         List availableRooms = new ArrayList<String>();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT rs." + constants.NUMBER_ROOM + " FROM " + constants.TABLE_NAME_roomSpecs + " AS rs WHERE rs." + constants.ROOM_TYPE + "=" + type.trim() + " AND rs." + constants.NUMBER_ROOM + " NOT IN ( SELECT rs1." + constants.NUMBER_ROOM + " FROM " + constants.TABLE_NAME_roomSpecs + " AS rs1 INNER JOIN " + constants.TABLE_NAME_RESERVE + " AS res ON rs." + constants.NUMBER_ROOM + "=" + "res." + constants.NUMBER_ROOM + " WHERE res." + constants.DATE_START + ">='" + dateStart +"' AND res."+constants.DATE_END+"<='"+dateEnd +"')", null);
+        Cursor cursor = db.rawQuery("SELECT rs." + constants.NUMBER_ROOM + " FROM " + constants.TABLE_NAME_roomSpecs + " AS rs WHERE rs." + constants.ROOM_TYPE + "=" + type.trim() +" AND rs."+constants.NUMBER_BED + "=" +bed.trim().toString() + " AND rs." + constants.NUMBER_ROOM + " NOT IN ( SELECT rs1." + constants.NUMBER_ROOM + " FROM " + constants.TABLE_NAME_roomSpecs + " AS rs1 INNER JOIN " + constants.TABLE_NAME_RESERVE + " AS res ON rs." + constants.NUMBER_ROOM + "=" + "res." + constants.NUMBER_ROOM + " WHERE res." + constants.DATE_START + ">='" + dateStart +"' AND res."+constants.DATE_END+"<='"+dateEnd +"')", null);
         if (cursor.moveToFirst()) {
             do {
                 availableRooms.add(cursor.getString(cursor.getColumnIndex(constants.NUMBER_ROOM)));
@@ -406,9 +406,6 @@ public class databaseHandler extends SQLiteOpenHelper {
 
     public void deleteFromReserve(String number_room, String code_customer, String dateStart, String dateEnd) {
         SQLiteDatabase db = this.getWritableDatabase();
-
-
-
         db.execSQL("delete from " + constants.TABLE_NAME_RESERVE + "  WHERE " +
                 constants.CUSTOMER_ID + " = " + code_customer
                 + " and "
