@@ -259,7 +259,7 @@ public class moreInfo extends AppCompatActivity {
     public void reserve(View v){
         if(START_DATE_SET&&END_DATE_SET){
             try {
-                String room = databaseHandler.getAvailableRooms(String.valueOf(type), startDate, endDate).get(0);
+                String room = databaseHandler.getAvailableRooms(String.valueOf(type),"1", startDate, endDate).get(0);
                 HashMap<String, String> userHash = session.getUserDetails();
                 databaseHandler.reserve(room, userHash.get(SessionManager.USER_ID), startDate, endDate);
                 Toast.makeText(this, "اتاق شما روز گردید", Toast.LENGTH_SHORT).show();
