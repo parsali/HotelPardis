@@ -9,7 +9,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="ir.farabi.hotelpardis.EmptyRoom"
-    android:background="@color/colorPrimary">
+    android:background="#ffff">
 
     <TextView
         android:text="ویرایش مشخصات"
@@ -20,7 +20,7 @@
         android:layout_marginTop="23dp"
         android:id="@+id/textView"
         android:textSize="30dp"
-        android:textColor="@android:color/white"
+        android:textColor="@color/colorPrimary"
         android:textStyle="bold"/>
 
     <EditText
@@ -29,13 +29,13 @@
         android:inputType="textPersonName"
         android:hint="نام"
         android:textColorHint="@android:color/darker_gray"
-        android:backgroundTint="@android:color/white"
+        android:backgroundTint="@color/colorAccent"
         android:ems="10"
         android:layout_below="@+id/textView"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="36dp"
         android:id="@+id/name"
-        android:textColor="@android:color/white"
+        android:textColor="@color/colorPrimary"
         android:gravity="right"/>
     <EditText
         android:layout_width="match_parent"
@@ -43,13 +43,13 @@
         android:inputType="textPersonName"
         android:hint="نام کاربری"
         android:textColorHint="@android:color/darker_gray"
-        android:backgroundTint="@android:color/white"
+        android:backgroundTint="@color/colorAccent"
         android:ems="10"
         android:layout_below="@+id/name"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
         android:id="@+id/username"
-        android:textColor="@android:color/white"
+        android:textColor="@color/colorPrimary"
         android:gravity="right"/>
     <EditText
         android:layout_width="match_parent"
@@ -57,13 +57,13 @@
         android:inputType="textPassword"
         android:hint="گذرواژه"
         android:textColorHint="@android:color/darker_gray"
-        android:backgroundTint="@android:color/white"
+        android:backgroundTint="@color/colorAccent"
         android:ems="10"
         android:layout_below="@+id/username"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
         android:id="@+id/password"
-        android:textColor="@android:color/white"
+        android:textColor="@color/colorPrimary"
         android:gravity="right"/>
     <EditText
         android:layout_width="match_parent"
@@ -71,24 +71,24 @@
         android:inputType="textPersonName"
         android:hint="کد ملی"
         android:textColorHint="@android:color/darker_gray"
-        android:backgroundTint="@android:color/white"
+        android:backgroundTint="@color/colorAccent"
         android:ems="10"
         android:layout_below="@+id/password"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
         android:id="@+id/code"
-        android:textColor="@android:color/white"
+        android:textColor="@color/colorPrimary"
         android:gravity="right"/>
 
     <Button
-        android:text="ویرایش مشخصات"
+        android:text="ویرایش "
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="34dp"
         android:id="@+id/signUp"
         android:layout_below="@+id/code"
         android:layout_centerHorizontal="true"
-        android:background="@color/mdtp_transparent_black"
+        android:background="@color/colorPrimaryDark"
         android:textColor="@android:color/white"
         android:textSize="20dp"
         android:onClick="onClickEditProfile"/>

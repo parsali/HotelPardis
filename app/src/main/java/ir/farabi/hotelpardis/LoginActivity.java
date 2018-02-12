@@ -106,4 +106,9 @@ public class LoginActivity extends AppCompatActivity {
         db.recreate();
         Toast.makeText(this,"database recreated!",Toast.LENGTH_LONG).show();
     }
+
+    @Override
+    public void onBackPressed() {
+       moveTaskToBack(true);
+    }
 }

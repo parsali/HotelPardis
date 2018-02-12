@@ -8,10 +8,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,11 +46,13 @@ public class moreInfo extends AppCompatActivity {
     databaseHandler databaseHandler;
     String startDate;
     String endDate;
+    SeekBar seekBar;
     int type;
     SessionManager session;
     Date START_DATE;
     Date END_DATE;
     Date NOW_DATE;
+    TextView progressSeekBar;
     boolean START_DATE_SET=false;
     boolean END_DATE_SET=false;
     PersianCalendar now;
@@ -81,10 +85,40 @@ public class moreInfo extends AppCompatActivity {
         khuruj_date=(TextView)findViewById(R.id.khuruj_date);
         backdrop = (ImageView)findViewById(R.id.backdrop);
         TextVurud = (TextView)findViewById(R.id.TextVurud);
+        progressSeekBar=(TextView)findViewById(R.id.progress);
+        seekBar=(SeekBar)findViewById(R.id.seekBar);
         TextKHuruj = (TextView)findViewById(R.id.TextKhuruj);
         info_text=(TextView)findViewById(R.id.info_text);
         session = new SessionManager(getApplicationContext());
         now = new PersianCalendar();
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress,
+                                          boolean fromUser) {
+
+                int MIN = 1;
+                if (progress < MIN) {
+
+                    seekBar.setProgress(1);
+                    progressSeekBar.setText(String.valueOf(1));
+                }
+                else
+                    progressSeekBar.setText(String.valueOf(String.valueOf(progress)));
+
+
+            }
+        });
 
         if(type==1){
             backdrop.setImageResource(R.drawable.luxury);
@@ -259,7 +293,7 @@ public class moreInfo extends AppCompatActivity {
     public void reserve(View v){
         if(START_DATE_SET&&END_DATE_SET){
             try {
-                String room = databaseHandler.getAvailableRooms(String.valueOf(type),"1", startDate, endDate).get(0);
+                String room = databaseHandler.getAvailableRooms(String.valueOf(type),String.valueOf(seekBar.getProgress()), startDate, endDate).get(0);
                 HashMap<String, String> userHash = session.getUserDetails();
                 databaseHandler.reserve(room, userHash.get(SessionManager.USER_ID), startDate, endDate);
                 Toast.makeText(this, "اتاق شما روز گردید", Toast.LENGTH_SHORT).show();
@@ -269,5 +303,13 @@ public class moreInfo extends AppCompatActivity {
             }
         }
         else Toast.makeText(this,"لطفا تاریخ ورود و خروج را وارد نمایید", Toast.LENGTH_SHORT).show();
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId()==android.R.id.home){
+            onBackPressed();
+            return true;}
+
+        return super.onOptionsItemSelected(item);
     }
 }

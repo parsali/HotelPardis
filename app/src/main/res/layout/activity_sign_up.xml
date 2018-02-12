@@ -20,7 +20,7 @@
         android:layout_marginTop="23dp"
         android:id="@+id/textView"
         android:textSize="30dp"
-        android:textColor="@android:color/white"
+        android:textColor="@color/colorPrimary"
         android:textStyle="bold"/>
 
     <EditText
@@ -64,7 +64,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
         android:id="@+id/password"
-        android:textColor="@android:color/white"
+        android:textColor="@color/colorPrimary"
         android:gravity="right"/>
     <EditText
         android:layout_width="match_parent"
@@ -78,7 +78,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
         android:id="@+id/code"
-        android:textColor="@android:color/white"
+        android:textColor="@color/colorPrimary"
         android:gravity="right"/>
 
     <Button

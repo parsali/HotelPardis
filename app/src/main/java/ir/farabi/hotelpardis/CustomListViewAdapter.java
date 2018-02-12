@@ -13,7 +13,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 
 /**
@@ -101,9 +105,50 @@ public class CustomListViewAdapter extends BaseAdapter {
             image=(ImageView)view.findViewById(R.id.imageHotel);
             name.setText(user.getName());
             db= new databaseHandler(mContext);
-            startDate.setText(resereveModules.get(position).getStartDate());
-            textkhuruj.setText(resereveModules.get(position).getEndDate());
-            price.setText(String.valueOf(rooms.get(position).getPrice()));
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            String dateInString = resereveModules.get(position).getStartDate();
+            Roozh roozh=new Roozh();
+            long Date1=0;
+            long Date2=0;
+
+            try {
+                int add=1;
+                Date date = formatter.parse(dateInString);
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(date);
+                Date1=date.getTime();
+                if (cal.get(Calendar.MONTH)==12)
+                    add=0;
+                roozh = new Roozh();
+                roozh.GregorianToPersian(cal.get(Calendar.YEAR),cal.get(Calendar.MONTH)+add,cal.get(Calendar.DAY_OF_MONTH));
+                System.out.println(date);
+                System.out.println(formatter.format(date));
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            startDate.setText(roozh.toString());
+            try {
+                dateInString=resereveModules.get(position).getEndDate();
+                Date date = formatter.parse(dateInString);
+                Date2=date.getTime();
+                roozh = new Roozh();
+                int add=1;
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(date);
+                if (cal.get(Calendar.MONTH)==12)
+                    add=0;
+
+                roozh.GregorianToPersian(cal.get(Calendar.YEAR),cal.get(Calendar.MONTH)+add,cal.get(Calendar.DAY_OF_MONTH));
+                System.out.println(date);
+                System.out.println(formatter.format(date));
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            int diff = (int)Math.abs(Math.round((Date1 - Date2) / (1000 * 60 * 60 * 24)));
+            textkhuruj.setText(roozh.toString());
+            price.setText(String.valueOf(rooms.get(position).getPrice()*diff)+" تومان ");
             typeInt=Integer.valueOf(rooms.get(position).getType());
             Log.d("typeInt",String.valueOf(typeInt));
             Log.d("userId",String.valueOf(user.getId()));
